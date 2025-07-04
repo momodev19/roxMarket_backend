@@ -1,0 +1,25 @@
+{
+    "name": "Backend Dev Container",
+    "workspaceFolder": "/srv/backend",
+    "dockerComposeFile": "../../docker/docker-compose.yml",
+    "service": "backend",
+    "remoteUser": "root",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bradlc.vscode-tailwindcss",
+                "christian-kohler.npm-intellisense",
+                "codeium.codeium",
+                "dbaeumer.vscode-eslint",
+                "donjayamanne.githistory",
+                "eamodio.gitlens",
+                "editorconfig.editorconfig",
+                "esbenp.prettier-vscode",
+                "ms-azuretools.vscode-containers",
+                "orta.vscode-jest",
+                "postman.postman-for-vscode",
+                "redhat.vscode-yaml"
+            ]
+        }
+    }
+}
