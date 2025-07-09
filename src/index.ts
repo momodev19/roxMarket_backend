@@ -1,14 +1,14 @@
-import express from 'express';
+import express from "express";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
 
 // Routes
-app.get('/', (_req, res) => {
-  res.send('Hello from TypeScript + Express!');
+app.get("/", (_req, res) => {
+  res.send("Hello from TypeScript + Express!");
 });
 
 // Start server
