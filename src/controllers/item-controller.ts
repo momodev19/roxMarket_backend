@@ -23,6 +23,7 @@ export class ItemsController {
    * @throws {Error} If ID is not a positive integer
    */
   getItemById = handleApiResponse(async (req: Request, res: Response) => {
+    console.log("Fetching item by ID:", req.params.id);
     const validated = z
       .object({
         id: positiveId,

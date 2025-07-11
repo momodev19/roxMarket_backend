@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
+import { Prisma } from "@prisma/client";
 
 type AsyncHandler = (req: Request, res: Response) => Promise<any>;
 
@@ -31,10 +32,7 @@ export const handleApiResponse = (
   return async (req: Request, res: Response) => {
     try {
       const data = await fn(req, res);
-      res.status(successStatus).json({
-        success: true,
-        data,
-      });
+      res.status(successStatus).json(data);
     } catch (error: any) {
       if (error instanceof ZodError) {
         const formattedErrors = error.issues.map((e) => ({
@@ -43,14 +41,21 @@ export const handleApiResponse = (
         }));
 
         return res.status(400).json({
-          success: false,
           error: "Validation error",
           details: formattedErrors,
         });
       }
 
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        return res.status(404).json({
+          error: "Resource not found",
+        });
+      }
+
       res.status(errorStatus).json({
-        success: false,
         error: error?.message || errorMessage,
       });
     }

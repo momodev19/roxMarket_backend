@@ -44,3 +44,5 @@ coverage/
 
 # Ignore migration SQL files if you don’t want them in your repo (not recommended)
 prisma/migrations/
+
+dist/
