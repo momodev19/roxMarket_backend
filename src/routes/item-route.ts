@@ -58,4 +58,48 @@ router.get("/", itemsController.getItems);
  */
 router.get("/:id", itemsController.getItemById);
 
+/**
+ * @swagger
+ * /items:
+ *   post:
+ *     summary: Create a new item
+ *     tags: [Items]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Shield"
+ *               type:
+ *                 type: integer
+ *                 example: 2
+ *     responses:
+ *       201:
+ *         description: Item created successfully
+ */
+router.post("/", itemsController.createItem);
+
+/**
+ * @swagger
+ * /items/{id}:
+ *   delete:
+ *     summary: Delete an item by ID
+ *     tags: [Items]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the item to delete
+ *     responses:
+ *       200:
+ *         description: Item deleted successfully
+ */
+router.delete("/:id", itemsController.removeItem);
+
 export default router;

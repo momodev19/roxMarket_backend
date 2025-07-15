@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { ItemService } from "../services/item-service";
 import { handleApiResponse } from "../utils/handle-api-response";
 import z from "zod";
-import { positiveId } from "../validators/number";
 
 export class ItemsController {
   itemService = new ItemService();
@@ -23,14 +22,55 @@ export class ItemsController {
    * @throws {Error} If ID is not a positive integer
    */
   getItemById = handleApiResponse(async (req: Request, res: Response) => {
-    console.log("Fetching item by ID:", req.params.id);
     const validated = z
       .object({
-        id: positiveId,
+        id: z.coerce.number().int().positive("ID must be a positive integer"),
       })
       .parse(req.params);
 
     return await this.itemService.getItemById(validated.id);
+  });
+
+  /**
+   * Create a new item
+   * @returns {Promise<Object>}
+   * @throws {Error} If item creation fails
+   */
+  createItem = handleApiResponse(async (req: Request, res: Response) => {
+    const types = [11, 12, 13, 14, 15];
+
+    const itemData = z
+      .object({
+        name: z.string().min(1, "Name is required"),
+        type: z
+          .number()
+          .int()
+          .refine((type) => types.includes(type), {
+            message: `Type must be one of ${types.join(", ")}`,
+          }),
+      })
+      .parse(req.body);
+
+    await this.itemService.createItem(itemData);
+    return res.status(201).json({ message: "Item created" });
+  });
+
+  /**
+   * Delete an item by ID
+   * @returns {Promise<void>}
+   * @throws {Error} If item deletion fails
+   * @throws {Error} If ID is invalid
+   * @throws {Error} If ID is not a positive integer
+   */
+  removeItem = handleApiResponse(async (req: Request, res: Response) => {
+    const validated = z
+      .object({
+        id: z.coerce.number().int().positive("ID must be a positive integer"),
+      })
+      .parse(req.params);
+
+    await this.itemService.removeItem(validated.id);
+    return res.status(204).send(); // No content response after deletion
   });
 }
 
