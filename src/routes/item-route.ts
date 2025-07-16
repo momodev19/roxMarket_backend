@@ -3,6 +3,7 @@ import { validateRequest } from "../middlewares/validate-request-middleware";
 import {
   itemParamsSchema,
   itemBodySchema,
+  itemUpdateBodySchema,
 } from "../validators/schemas/item-schema";
 import { itemsController } from "../controllers/item-controller";
 import { handleApiResponse } from "../utils/handle-api-response";
@@ -83,15 +84,83 @@ router.get(
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Shield"
+ *                 example: "New Sword"
  *               type:
  *                 type: integer
- *                 example: 2
+ *                 example: 1
  *     responses:
  *       201:
  *         description: Item created successfully
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *           properties:
+ *             id:
+ *               type: integer
+ *               example: 1
+ *             name:
+ *               type: string
+ *               example: "New Sword"
+ *             type:
+ *               type: integer
+ *               example: 1
  */
-router.post("/", handleApiResponse(itemsController.createItem));
+router.post(
+  "/",
+  validateRequest({ body: itemBodySchema }),
+  handleApiResponse(itemsController.createItem)
+);
+
+/**
+ * @swagger
+ * /items/{id}:
+ *   put:
+ *     summary: Update an existing item
+ *     tags: [Items]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the item to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Updated Sword"
+ *               type:
+ *                 type: integer
+ *                 example: 1
+ *     responses:
+ *       200:
+ *         description: Item updated successfully
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 example: 1
+ *               name:
+ *                 type: string
+ *                 example: "Updated Sword"
+ *               type:
+ *                 type: integer
+ *                 example: 1
+ */
+router.put(
+  "/:id",
+  validateRequest({ params: itemParamsSchema, body: itemUpdateBodySchema }),
+  handleApiResponse(itemsController.updateItem)
+);
 
 /**
  * @swagger

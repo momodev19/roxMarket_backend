@@ -51,6 +51,23 @@ export class ItemService {
   }
 
   /**
+   * Updates an existing item.
+   */
+  async updateItem(
+    id: number,
+    itemData: { name?: string; type?: number }
+  ): Promise<Partial<Item>> {
+    return prisma.item.update({
+      where: { id },
+      data: {
+        name: itemData.name,
+        typeId: itemData.type,
+      },
+      select: { ...this.baseSelect, ...{ typeId: true } },
+    });
+  }
+
+  /**
    * @param id - The ID of the item to delete
    * @returns {Promise<Item>} - The deleted item
    *

@@ -25,8 +25,6 @@ export class ItemsController {
   /**
    * Get item by ID
    * @throws {Error} If item not found
-   * @throws {Error} If ID is invalid
-   * @throws {Error} If ID is not a positive integer
    */
   getItemById = async (req: Request<ItemParams>): Promise<Partial<Item>> => {
     return await this.itemService.getItemById(req.params.id);
@@ -50,10 +48,29 @@ export class ItemsController {
   };
 
   /**
+   * Update an existing item
+   */
+  updateItem = async (
+    req: Request<ItemParams, Item, ItemBody>
+  ): Promise<Partial<Item>> => {
+    const types = await this.itemTypeService.getAllItemTypes();
+    const typeIds = types.map((type) => type.id);
+
+    z.object({
+      type: z
+        .number()
+        .refine((t) => typeIds.includes(t), {
+          message: `Type must be one of ${typeIds.join(", ")}`,
+        })
+        .optional(),
+    }).parse(req.body);
+
+    return await this.itemService.updateItem(req.params.id, req.body);
+  };
+
+  /**
    * Delete an item by ID
    * @throws {Error} If item deletion fails
-   * @throws {Error} If ID is invalid
-   * @throws {Error} If ID is not a positive integer
    */
   removeItem = async (req: Request, res: Response): Promise<void> => {
     const validated = z
