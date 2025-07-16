@@ -5,6 +5,8 @@ dotenv.config();
 // Importing routes
 import itemsRoute from "./routes/item-route";
 import { setupSwagger } from "./swagger";
+import { globalErrorResponseMiddleware } from "./middlewares/globals/global-error-response-middleware";
+import { globalSuccessResponseMiddleware } from "./middlewares/globals/global-success-response-middleware";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +22,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/items", itemsRoute);
+
+// response middlewares
+app.use(globalSuccessResponseMiddleware);
+app.use(globalErrorResponseMiddleware);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

@@ -14,15 +14,17 @@ model Item {
   typeId Int
   type   ItemType @relation(fields: [typeId], references: [id])
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  ItemPrice ItemPrice[]
+  created_at DateTime    @default(now())
+  updated_at DateTime    @default(now()) @updatedAt
+  ItemPrice  ItemPrice[]
 }
 
 model ItemType {
-  id   Int    @id @default(autoincrement())
-  name String @unique
-  Item Item[]
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  Item       Item[]
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 }
 
 model ItemPrice {
@@ -31,10 +33,10 @@ model ItemPrice {
   itemId Int
   item   Item @relation(fields: [itemId], references: [id])
 
-  price     Int
-  date      DateTime @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  price      Int
+  date       DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 
   @@unique([itemId, date])
   @@index([date])

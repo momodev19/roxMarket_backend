@@ -1,5 +1,11 @@
 import express from "express";
+import { validateRequest } from "../middlewares/validate-request-middleware";
+import {
+  itemParamsSchema,
+  itemBodySchema,
+} from "../validators/schemas/item-schema";
 import { itemsController } from "../controllers/item-controller";
+import { handleApiResponse } from "../utils/handle-api-response";
 
 const router = express.Router();
 
@@ -26,7 +32,7 @@ const router = express.Router();
  *                     type: string
  *                     example: "Sword"
  */
-router.get("/", itemsController.getItems);
+router.get("/", handleApiResponse(itemsController.getItems));
 
 /**
  * @swagger
@@ -56,7 +62,11 @@ router.get("/", itemsController.getItems);
  *                   type: string
  *                   example: "Sword"
  */
-router.get("/:id", itemsController.getItemById);
+router.get(
+  "/:id",
+  validateRequest({ params: itemParamsSchema }),
+  handleApiResponse(itemsController.getItemById)
+);
 
 /**
  * @swagger
@@ -81,7 +91,7 @@ router.get("/:id", itemsController.getItemById);
  *       201:
  *         description: Item created successfully
  */
-router.post("/", itemsController.createItem);
+router.post("/", handleApiResponse(itemsController.createItem));
 
 /**
  * @swagger
@@ -100,6 +110,10 @@ router.post("/", itemsController.createItem);
  *       200:
  *         description: Item deleted successfully
  */
-router.delete("/:id", itemsController.removeItem);
+router.delete(
+  "/:id",
+  validateRequest({ params: itemParamsSchema }),
+  handleApiResponse(itemsController.removeItem)
+);
 
 export default router;

@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma";
+import { Item } from "@prisma/client";
 
 export class ItemService {
   private readonly baseSelect = {
@@ -8,11 +9,12 @@ export class ItemService {
 
   /**
    * @param select - Optional fields to include (merged with default fields).
-   * @returns {Promise<Item[]>} - List of all items
    *
    * @throws Will throw an error if the item is not found or if there is a database error
    */
-  async getAllItems(select?: object) {
+  async getAllItems(
+    select?: Partial<Record<keyof Item, boolean>>
+  ): Promise<Item[]> {
     return prisma.item.findMany({ select: { ...this.baseSelect, ...select } });
   }
 
@@ -23,7 +25,10 @@ export class ItemService {
    *
    * @throws Will throw an error if the item is not found or if there is a database error
    */
-  async getItemById(id: number, select?: object) {
+  async getItemById(
+    id: number,
+    select?: Partial<Record<keyof Item, boolean>>
+  ): Promise<Item> {
     return prisma.item.findUniqueOrThrow({
       select: { ...this.baseSelect, ...select },
       where: { id },
@@ -36,7 +41,7 @@ export class ItemService {
    *
    * @throws Will throw an error if the item creation fails or if there is a database error
    */
-  async createItem(itemData: { name: string; type: number }) {
+  async createItem(itemData: { name: string; type: number }): Promise<Item> {
     return prisma.item.create({
       data: {
         name: itemData.name,
@@ -51,7 +56,7 @@ export class ItemService {
    *
    * @throws Will throw an error if the item deletion fails or if there is a database error
    */
-  async removeItem(id: number) {
+  async removeItem(id: number): Promise<Item> {
     return prisma.item.delete({
       where: { id },
     });
