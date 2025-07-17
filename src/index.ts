@@ -3,8 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Importing routes
-import itemsRoute from "./routes/item-route";
-import itemsPriceRoute from "./routes/item-price-route";
+import apiRouter from "./routes/index";
 import { setupSwagger } from "./swagger";
 import { globalErrorResponseMiddleware } from "./middlewares/globals/global-error-response-middleware";
 import { globalSuccessResponseMiddleware } from "./middlewares/globals/global-success-response-middleware";
@@ -22,8 +21,7 @@ app.get("/", (req, res) => {
   res.send("Hello from Express + TypeScript + Docker!");
 });
 
-app.use("/items", itemsRoute);
-app.use("/items/prices", itemsPriceRoute);
+app.use("/api", apiRouter);
 
 // response middlewares
 app.use(globalSuccessResponseMiddleware);
