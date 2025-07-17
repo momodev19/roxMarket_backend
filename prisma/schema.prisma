@@ -33,7 +33,7 @@ model ItemPrice {
   itemId Int
   item   Item @relation(fields: [itemId], references: [id])
 
-  price      Int
+  price      Int      @default(0)
   date       DateTime @default(now())
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt

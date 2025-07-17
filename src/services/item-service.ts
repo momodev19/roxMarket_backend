@@ -1,10 +1,18 @@
 import prisma from "../lib/prisma";
-import { Item } from "@prisma/client";
+import { Item, ItemPrice } from "@prisma/client";
+
+type ItemWithPrice = {
+  id: number;
+  name: string;
+  typeId: number;
+  price: number;
+};
 
 export class ItemService {
   private readonly baseSelect = {
     id: true,
     name: true,
+    typeId: true,
   };
 
   /**
@@ -77,5 +85,26 @@ export class ItemService {
     return prisma.item.delete({
       where: { id },
     });
+  }
+
+  async getItemsWithPrice(
+    select?: Partial<Record<keyof Item, boolean>>
+  ): Promise<ItemWithPrice[]> {
+    const items = await prisma.item.findMany({
+      select: {
+        ...this.baseSelect,
+        ...select,
+        ItemPrice: {
+          take: 1,
+          select: { price: true },
+          orderBy: { created_at: "desc" }, // Get the latest price
+        },
+      },
+    });
+
+    return items.map(({ ItemPrice, ...item }) => ({
+      ...item,
+      price: ItemPrice[0]?.price || 0,
+    }));
   }
 }

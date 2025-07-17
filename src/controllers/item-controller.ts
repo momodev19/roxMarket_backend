@@ -82,6 +82,10 @@ export class ItemsController {
     await this.itemService.removeItem(validated.id);
     res.status(204).send(); // No content response after deletion
   };
+
+  getItemsWithPrice = async () => {
+    return await this.itemService.getItemsWithPrice();
+  };
 }
 
 export const itemsController = new ItemsController();

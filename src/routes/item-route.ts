@@ -10,6 +10,11 @@ import { handleApiResponse } from "../utils/handle-api-response";
 
 const router = express.Router();
 
+router.get(
+  "/with-latest-prices",
+  handleApiResponse(itemsController.getItemsWithPrice)
+);
+
 /**
  * @swagger
  * /items:
