@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
   res.send("Hello from Express + TypeScript + Docker!");
 });
 
-app.use("/api", apiRouter);
+app.use("/api/v1", apiRouter);
 
 // response middlewares
 app.use(globalSuccessResponseMiddleware);
