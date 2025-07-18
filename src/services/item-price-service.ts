@@ -11,10 +11,51 @@ export class ItemPriceService {
     date: true,
   };
 
-  async getItemPriceById(id: number, select?: ItemPriceSelectType) {
+  async getItemPriceById(
+    id: number,
+    select?: ItemPriceSelectType
+  ): Promise<Partial<ItemPrice>> {
     return prisma.itemPrice.findUniqueOrThrow({
       select: { ...this.baseSelect, ...select },
       where: { id },
     });
+  }
+
+  async createItemPrice(itemPriceData: {
+    itemId: number;
+    price: number;
+    date: Date;
+  }): Promise<Partial<ItemPrice>> {
+    return prisma.itemPrice.create({
+      data: {
+        itemId: itemPriceData.itemId,
+        price: itemPriceData.price,
+        date: itemPriceData.date,
+      },
+      select: this.baseSelect,
+    });
+  }
+
+  async updateItemPrice(
+    id: number,
+    itemPriceData: {
+      itemId?: number;
+      price?: number;
+      date?: Date;
+    }
+  ): Promise<Partial<ItemPrice>> {
+    return prisma.itemPrice.update({
+      where: { id },
+      data: {
+        itemId: itemPriceData.itemId,
+        price: itemPriceData.price,
+        date: itemPriceData.date,
+      },
+      select: this.baseSelect,
+    });
+  }
+
+  async deleteItemPrice(id: number): Promise<ItemPrice> {
+    return await prisma.itemPrice.delete({ where: { id } });
   }
 }

@@ -14,6 +14,12 @@ const swaggerOptions: {
       version: "1.0.0",
       description: "Personal project for Ragnarok X Global Market",
     },
+    servers: [
+      {
+        url: "/api/v1",
+        description: "Base API path",
+      },
+    ],
     paths: {},
   },
   apis: ["./src/routes/**/*.ts"],

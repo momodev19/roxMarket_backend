@@ -14,6 +14,11 @@ export const handleApiResponse = (fn: AsyncHandler): RequestHandler => {
     try {
       const data = await fn(req, res);
 
+      // If response already sent by handler, do nothing more
+      if (res.headersSent) {
+        return;
+      }
+
       return res.status(res.statusCode ?? 200).json(data);
     } catch (error: any) {
       next(error);

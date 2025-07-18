@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import { ItemService, ItemWithPrice } from "../services/item-service";
 import { ItemTypeService } from "../services/item-type-service";
 import z from "zod";
-import { Item } from "@prisma/client";
+import { Item, ItemType } from "@prisma/client";
 import {
-  itemIdParamsSchema,
+  itemIdParamSchema,
   itemBodySchema,
 } from "../validators/schemas/item-schema";
 
-type ItemIdParams = z.infer<typeof itemIdParamsSchema>;
+type ItemIdParams = z.infer<typeof itemIdParamSchema>;
 type ItemBody = z.infer<typeof itemBodySchema>;
 
 export class ItemsController {
@@ -34,7 +34,7 @@ export class ItemsController {
    * Create a new item
    * @throws {Error} If item creation fails
    */
-  createItem = async (req: Request<ItemBody>): Promise<object> => {
+  createItem = async (req: Request<ItemBody>): Promise<Item> => {
     const types = await this.itemTypeService.getAllItemTypes();
     const typeIds = types.map((type) => type.id);
 
@@ -72,15 +72,14 @@ export class ItemsController {
    * Delete an item by ID
    * @throws {Error} If item deletion fails
    */
-  removeItem = async (req: Request, res: Response): Promise<void> => {
-    const validated = z
-      .object({
-        id: z.coerce.number().int().positive("ID must be a positive integer"),
-      })
-      .parse(req.params);
+  removeItem = async (
+    req: Request<ItemIdParams>,
+    res: Response
+  ): Promise<void> => {
+    await this.itemService.removeItem(req.params.id);
 
-    await this.itemService.removeItem(validated.id);
-    res.status(204).send(); // No content response after deletion
+    res.status(204);
+    return;
   };
 
   /**
@@ -88,6 +87,14 @@ export class ItemsController {
    */
   getItemsWithPrice = async (): Promise<ItemWithPrice[]> => {
     return await this.itemService.getItemsWithPrice();
+  };
+
+  /**
+   * Get item by ID with all its prices
+   * @throws {Error} If item not found
+   */
+  getItemWithAllPrices = async (req: Request<ItemIdParams>) => {
+    return await this.itemService.getItemWithAllPrices(req.params.id);
   };
 }
 

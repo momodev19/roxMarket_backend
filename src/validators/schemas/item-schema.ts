@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const itemIdParamsSchema = z.object({
+export const itemIdParamSchema = z.object({
   id: z.coerce.number().int().positive("ID must be a positive integer"),
 });
 

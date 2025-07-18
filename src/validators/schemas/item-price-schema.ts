@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const itemPriceIdParamsSchema = z.object({
+export const itemPriceIdParamSchema = z.object({
   id: z.coerce.number().int().positive("ID must be a positive integer"),
 });
 
@@ -10,7 +10,7 @@ export const createItemPriceBodySchema = z.object({
     .int()
     .positive("Item ID must be a positive integer"),
   price: z.coerce.number().int().positive("Price must be a positive number"),
-  date: z.date(),
+  date: z.coerce.date(),
 });
 
 export const updateItemPriceBodySchema = z.object({
@@ -24,5 +24,5 @@ export const updateItemPriceBodySchema = z.object({
     .int()
     .positive("Price must be a positive number")
     .optional(),
-  date: z.date().optional(),
+  date: z.coerce.date().optional(),
 });

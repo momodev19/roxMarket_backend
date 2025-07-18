@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma";
+import { ItemType } from "@prisma/client";
 
 export class ItemTypeService {
   private readonly baseSelect = {
@@ -12,7 +13,7 @@ export class ItemTypeService {
    *
    * @throws Will throw an error if the item type is not found or if there is a database error
    */
-  async getAllItemTypes(select?: object) {
+  async getAllItemTypes(select?: object): Promise<Partial<ItemType>[]> {
     return prisma.itemType.findMany({
       select: { ...this.baseSelect, ...select },
     });
@@ -25,7 +26,10 @@ export class ItemTypeService {
    *
    * @throws Will throw an error if the item type is not found or if there is a database error
    */
-  async getItemTypeById(id: number, select?: object) {
+  async getItemTypeById(
+    id: number,
+    select?: object
+  ): Promise<Partial<ItemType>> {
     return prisma.itemType.findUniqueOrThrow({
       select: { ...this.baseSelect, ...select },
       where: { id },
@@ -38,7 +42,7 @@ export class ItemTypeService {
    *
    * @throws Will throw an error if the item type creation fails or if there is a database error
    */
-  async createItemType(itemTypeData: { name: string }) {
+  async createItemType(itemTypeData: { name: string }): Promise<ItemType> {
     return prisma.itemType.create({
       data: {
         name: itemTypeData.name,
@@ -52,7 +56,7 @@ export class ItemTypeService {
    *
    * @throws Will throw an error if the item type deletion fails or if there is a database error
    */
-  async removeItemType(id: number) {
+  async removeItemType(id: number): Promise<ItemType> {
     return prisma.itemType.delete({
       where: { id },
     });

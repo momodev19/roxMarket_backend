@@ -42,7 +42,6 @@ export class ItemService {
 
   /**
    * @param itemData - The data for the new item
-   * @returns {Promise<Item>} - The created item
    *
    * @throws Will throw an error if the item creation fails or if there is a database error
    */
@@ -57,6 +56,8 @@ export class ItemService {
 
   /**
    * Updates an existing item.
+   * @param id - The ID of the item to update
+   * @param itemData - The data for the updated item
    */
   async updateItem(
     id: number,
@@ -74,7 +75,6 @@ export class ItemService {
 
   /**
    * @param id - The ID of the item to delete
-   * @returns {Promise<Item>} - The deleted item
    *
    * @throws Will throw an error if the item deletion fails or if there is a database error
    */
@@ -84,6 +84,10 @@ export class ItemService {
     });
   }
 
+  /**
+   * get all items with their latest price
+   * @param select - Optional fields to include (merged with default fields).
+   */
   async getItemsWithPrice(select?: ItemSelectType): Promise<ItemWithPrice[]> {
     const items = await prisma.item.findMany({
       select: {
@@ -101,5 +105,34 @@ export class ItemService {
       ...item,
       price: ItemPrice[0]?.price || 0,
     }));
+  }
+
+  /**
+   * getting an item with all its prices
+   * @param id - The ID of the item to fetch
+   * @param select - Optional fields to include (merged with default fields).
+   *
+   * @throws Will throw an error if the item is not found or if there is a database error
+   */
+  async getItemWithAllPrices(
+    id: number,
+    select?: ItemSelectType
+  ): Promise<Item & { prices: { price: number; date: Date }[] }> {
+    const { ItemPrice, ...items } = await prisma.item.findUniqueOrThrow({
+      select: {
+        ...this.baseSelect,
+        ...select,
+        ItemPrice: {
+          select: { price: true, date: true },
+          orderBy: { created_at: "desc" },
+        },
+      },
+      where: { id },
+    });
+
+    return {
+      ...items,
+      prices: ItemPrice,
+    };
   }
 }
