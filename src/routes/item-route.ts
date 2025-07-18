@@ -1,7 +1,7 @@
 import express from "express";
 import { validateRequest } from "../middlewares/validate-request-middleware";
 import {
-  itemParamsSchema,
+  itemIdParamSchema,
   itemBodySchema,
   itemUpdateBodySchema,
 } from "../validators/schemas/item-schema";
@@ -9,11 +9,6 @@ import { itemsController } from "../controllers/item-controller";
 import { handleApiResponse } from "../utils/handle-api-response";
 
 const router = express.Router();
-
-router.get(
-  "/with-latest-prices",
-  handleApiResponse(itemsController.getItemsWithPrice)
-);
 
 /**
  * @swagger
@@ -70,7 +65,7 @@ router.get("/", handleApiResponse(itemsController.getItems));
  */
 router.get(
   "/:id",
-  validateRequest({ params: itemParamsSchema }),
+  validateRequest({ params: itemIdParamSchema }),
   handleApiResponse(itemsController.getItemById)
 );
 
@@ -163,7 +158,7 @@ router.post(
  */
 router.put(
   "/:id",
-  validateRequest({ params: itemParamsSchema, body: itemUpdateBodySchema }),
+  validateRequest({ params: itemIdParamSchema, body: itemUpdateBodySchema }),
   handleApiResponse(itemsController.updateItem)
 );
 
@@ -186,8 +181,56 @@ router.put(
  */
 router.delete(
   "/:id",
-  validateRequest({ params: itemParamsSchema }),
+  validateRequest({ params: itemIdParamSchema }),
   handleApiResponse(itemsController.removeItem)
+);
+
+/**
+ * @swagger
+ * /items/{id}/prices:
+ *   get:
+ *     summary: Retrieve all prices for an item
+ *     tags: [Items]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the item to retrieve prices for
+ *     responses:
+ *       200:
+ *         description: List of item prices
+ *         content:
+ *           application/json:
+ *             schema:
+ *                type: object
+ *                properties:
+ *                  id:
+ *                    type: integer
+ *                    example: 1
+ *                  name:
+ *                    type: string
+ *                    example: "Sword"
+ *                  itemId:
+ *                    type: integer
+ *                    example: 1
+ *                  ItemPrice:
+ *                    type: array
+ *                    items:
+ *                      type: object
+ *                      properties:
+ *                        price:
+ *                          type: number
+ *                          example: 10
+ *                        date:
+ *                          type: string
+ *                          example: "2023-05-01T00:00:00.000Z"
+ */
+router.get(
+  "/:id/prices/",
+  validateRequest({ params: itemIdParamSchema }),
+  handleApiResponse(itemsController.getItemWithAllPrices)
 );
 
 export default router;

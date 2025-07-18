@@ -6,7 +6,6 @@ dotenv.config();
 import apiRouter from "./routes/index";
 import { setupSwagger } from "./swagger";
 import { globalErrorResponseMiddleware } from "./middlewares/globals/global-error-response-middleware";
-import { globalSuccessResponseMiddleware } from "./middlewares/globals/global-success-response-middleware";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,9 +23,19 @@ app.get("/", (req, res) => {
 app.use("/api/v1", apiRouter);
 
 // response middlewares
-app.use(globalSuccessResponseMiddleware);
 app.use(globalErrorResponseMiddleware);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+setInterval(() => {
+  const used = process.memoryUsage();
+  console.log(
+    `[MEMORY] RSS: ${(used.rss / 1024 / 1024).toFixed(2)} MB, Heap: ${(
+      used.heapUsed /
+      1024 /
+      1024
+    ).toFixed(2)} MB`
+  );
+}, 10000); // every 10s
