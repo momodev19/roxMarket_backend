@@ -4,7 +4,7 @@ import itemPricesRouter from "./item-price-route";
 
 const router = express.Router();
 
-router.use("/items", itemsRouter);
 router.use("/items/prices", itemPricesRouter);
+router.use("/items", itemsRouter);
 
 export default router;

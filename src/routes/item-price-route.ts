@@ -1,37 +1,26 @@
 import express from "express";
 import { handleApiResponse } from "../utils/handle-api-response";
 import { itemsController } from "../controllers/item-controller";
+import { itemPriceController } from "../controllers/item-price-controller";
+import { validateRequest } from "../middlewares/validate-request-middleware";
+import {
+  createItemPriceBodySchema,
+  itemPriceIdParamsSchema,
+} from "../validators/schemas/item-price-schema";
 
 const router = express.Router();
-/**
- * @swagger
- * /items/prices/all:
- *   get:
- *     summary: Retrieve all items with their latest prices
- *     tags: [Items]
- *     responses:
- *       200:
- *         description: List of items with latest prices
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     example: 1
- *                   name:
- *                     type: string
- *                     example: "Sword"
- *                   typeId:
- *                     type: integer
- *                     example: 1
- *                   price:
- *                     type: integer
- *                     example: 100
- */
-router.get("/all", handleApiResponse(itemsController.getItemsWithPrice));
+
+router.get("/", handleApiResponse(itemsController.getItemsWithPrice));
+router.get(
+  "/:id",
+  validateRequest({ params: itemPriceIdParamsSchema }),
+  handleApiResponse(itemPriceController.getPrice)
+);
+
+router.post(
+  "/",
+  validateRequest({ body: createItemPriceBodySchema }),
+  handleApiResponse(itemPriceController.createPrice)
+);
 
 export default router;

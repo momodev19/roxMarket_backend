@@ -12,8 +12,9 @@ type AsyncHandler = (req: Request<any>, res: Response) => Promise<any>;
 export const handleApiResponse = (fn: AsyncHandler): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.locals.data = await fn(req, res);
-      next();
+      const data = await fn(req, res);
+
+      return res.status(res.statusCode ?? 200).json(data);
     } catch (error: any) {
       next(error);
     }

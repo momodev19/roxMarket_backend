@@ -1,7 +1,7 @@
 import express from "express";
 import { validateRequest } from "../middlewares/validate-request-middleware";
 import {
-  itemParamsSchema,
+  itemIdParamsSchema,
   itemBodySchema,
   itemUpdateBodySchema,
 } from "../validators/schemas/item-schema";
@@ -9,11 +9,6 @@ import { itemsController } from "../controllers/item-controller";
 import { handleApiResponse } from "../utils/handle-api-response";
 
 const router = express.Router();
-
-router.get(
-  "/with-latest-prices",
-  handleApiResponse(itemsController.getItemsWithPrice)
-);
 
 /**
  * @swagger
@@ -70,7 +65,7 @@ router.get("/", handleApiResponse(itemsController.getItems));
  */
 router.get(
   "/:id",
-  validateRequest({ params: itemParamsSchema }),
+  validateRequest({ params: itemIdParamsSchema }),
   handleApiResponse(itemsController.getItemById)
 );
 
@@ -163,7 +158,7 @@ router.post(
  */
 router.put(
   "/:id",
-  validateRequest({ params: itemParamsSchema, body: itemUpdateBodySchema }),
+  validateRequest({ params: itemIdParamsSchema, body: itemUpdateBodySchema }),
   handleApiResponse(itemsController.updateItem)
 );
 
@@ -186,7 +181,7 @@ router.put(
  */
 router.delete(
   "/:id",
-  validateRequest({ params: itemParamsSchema }),
+  validateRequest({ params: itemIdParamsSchema }),
   handleApiResponse(itemsController.removeItem)
 );
 

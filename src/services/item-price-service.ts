@@ -1,20 +1,20 @@
 import prisma from "../lib/prisma";
 import { ItemPrice } from "@prisma/client";
 
+type ItemPriceSelectType = Partial<Record<keyof ItemPrice, boolean>>;
+
 export class ItemPriceService {
   private readonly baseSelect = {
     id: true,
     itemId: true,
     price: true,
+    date: true,
   };
 
-  // async getItemsWithPrice(): Promise<Partial<ItemPrice[]>> {
-  //   return await prisma.item.findMany({
-  //     include: {
-  //       ItemPrice: {
-  //         take: 1,
-
-  //       }
-  //   });
-  // }
+  async getItemPriceById(id: number, select?: ItemPriceSelectType) {
+    return prisma.itemPrice.findUniqueOrThrow({
+      select: { ...this.baseSelect, ...select },
+      where: { id },
+    });
+  }
 }

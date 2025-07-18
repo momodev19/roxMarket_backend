@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { ItemService } from "../services/item-service";
+import { ItemService, ItemWithPrice } from "../services/item-service";
 import { ItemTypeService } from "../services/item-type-service";
 import z from "zod";
 import { Item } from "@prisma/client";
 import {
-  itemParamsSchema,
+  itemIdParamsSchema,
   itemBodySchema,
 } from "../validators/schemas/item-schema";
 
-type ItemParams = z.infer<typeof itemParamsSchema>;
+type ItemIdParams = z.infer<typeof itemIdParamsSchema>;
 type ItemBody = z.infer<typeof itemBodySchema>;
 
 export class ItemsController {
@@ -26,7 +26,7 @@ export class ItemsController {
    * Get item by ID
    * @throws {Error} If item not found
    */
-  getItemById = async (req: Request<ItemParams>): Promise<Partial<Item>> => {
+  getItemById = async (req: Request<ItemIdParams>): Promise<Partial<Item>> => {
     return await this.itemService.getItemById(req.params.id);
   };
 
@@ -51,7 +51,7 @@ export class ItemsController {
    * Update an existing item
    */
   updateItem = async (
-    req: Request<ItemParams, Item, ItemBody>
+    req: Request<ItemIdParams, Item, ItemBody>
   ): Promise<Partial<Item>> => {
     const types = await this.itemTypeService.getAllItemTypes();
     const typeIds = types.map((type) => type.id);
@@ -83,7 +83,10 @@ export class ItemsController {
     res.status(204).send(); // No content response after deletion
   };
 
-  getItemsWithPrice = async () => {
+  /**
+   * Get all items with their latest prices
+   */
+  getItemsWithPrice = async (): Promise<ItemWithPrice[]> => {
     return await this.itemService.getItemsWithPrice();
   };
 }

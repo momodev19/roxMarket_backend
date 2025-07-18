@@ -1,12 +1,14 @@
 import prisma from "../lib/prisma";
 import { Item, ItemPrice } from "@prisma/client";
 
-type ItemWithPrice = {
+export type ItemWithPrice = {
   id: number;
   name: string;
   typeId: number;
   price: number;
 };
+
+type ItemSelectType = Partial<Record<keyof Item, boolean>>;
 
 export class ItemService {
   private readonly baseSelect = {
@@ -20,9 +22,7 @@ export class ItemService {
    *
    * @throws Will throw an error if the item is not found or if there is a database error
    */
-  async getAllItems(
-    select?: Partial<Record<keyof Item, boolean>>
-  ): Promise<Item[]> {
+  async getAllItems(select?: ItemSelectType): Promise<Item[]> {
     return prisma.item.findMany({ select: { ...this.baseSelect, ...select } });
   }
 
@@ -33,10 +33,7 @@ export class ItemService {
    *
    * @throws Will throw an error if the item is not found or if there is a database error
    */
-  async getItemById(
-    id: number,
-    select?: Partial<Record<keyof Item, boolean>>
-  ): Promise<Item> {
+  async getItemById(id: number, select?: ItemSelectType): Promise<Item> {
     return prisma.item.findUniqueOrThrow({
       select: { ...this.baseSelect, ...select },
       where: { id },
@@ -87,9 +84,7 @@ export class ItemService {
     });
   }
 
-  async getItemsWithPrice(
-    select?: Partial<Record<keyof Item, boolean>>
-  ): Promise<ItemWithPrice[]> {
+  async getItemsWithPrice(select?: ItemSelectType): Promise<ItemWithPrice[]> {
     const items = await prisma.item.findMany({
       select: {
         ...this.baseSelect,
