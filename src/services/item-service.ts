@@ -22,7 +22,7 @@ export class ItemService {
    *
    * @throws Will throw an error if the item is not found or if there is a database error
    */
-  async getAllItems(select?: ItemSelectType): Promise<Item[]> {
+  async getAllItems(select?: ItemSelectType): Promise<Partial<Item[]>> {
     return prisma.item.findMany({ select: { ...this.baseSelect, ...select } });
   }
 
@@ -88,7 +88,11 @@ export class ItemService {
    * get all items with their latest price
    * @param select - Optional fields to include (merged with default fields).
    */
-  async getItemsWithPrice(select?: ItemSelectType): Promise<ItemWithPrice[]> {
+  async getItemsWithPrice(
+    type?: number,
+    select?: ItemSelectType
+  ): Promise<Partial<ItemWithPrice[]>> {
+    const where = type ? { typeId: type } : undefined;
     const items = await prisma.item.findMany({
       select: {
         ...this.baseSelect,
@@ -99,6 +103,7 @@ export class ItemService {
           orderBy: { created_at: "desc" }, // Get the latest price
         },
       },
+      where,
     });
 
     return items.map(({ ItemPrice, ...item }) => ({

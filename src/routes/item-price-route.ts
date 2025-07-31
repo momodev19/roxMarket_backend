@@ -6,7 +6,8 @@ import { validateRequest } from "../middlewares/validate-request-middleware";
 import {
   createItemPriceBodySchema,
   itemPriceIdParamSchema,
-  updateItemPriceBodySchema,
+  optionalItemPriceBodySchema,
+  optionalTypeQuerySchema,
 } from "../validators/schemas/item-price-schema";
 
 const router = express.Router();
@@ -17,6 +18,13 @@ const router = express.Router();
  *   get:
  *     summary: Retrieve all item with the latest price
  *     tags: [Item Prices]
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: integer
+ *         description: Filter by item type
+ *         required: false
  *     responses:
  *       200:
  *         description: List of items with latest price
@@ -40,7 +48,11 @@ const router = express.Router();
  *                     type: integer
  *                     example: 100
  */
-router.get("/", handleApiResponse(itemsController.getItemsWithPrice));
+router.get(
+  "/",
+  validateRequest({ query: optionalTypeQuerySchema }),
+  handleApiResponse(itemsController.getItemsWithPrice)
+);
 
 /**
  * @swagger
@@ -185,7 +197,7 @@ router.put(
   "/:id",
   validateRequest({
     params: itemPriceIdParamSchema,
-    body: updateItemPriceBodySchema,
+    body: optionalItemPriceBodySchema,
   }),
   handleApiResponse(itemPriceController.updatePrice)
 );

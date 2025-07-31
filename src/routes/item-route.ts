@@ -3,7 +3,7 @@ import { validateRequest } from "../middlewares/validate-request-middleware";
 import {
   itemIdParamSchema,
   itemBodySchema,
-  itemUpdateBodySchema,
+  optionalItemBodySchema,
 } from "../validators/schemas/item-schema";
 import { itemsController } from "../controllers/item-controller";
 import { handleApiResponse } from "../utils/handle-api-response";
@@ -158,7 +158,7 @@ router.post(
  */
 router.put(
   "/:id",
-  validateRequest({ params: itemIdParamSchema, body: itemUpdateBodySchema }),
+  validateRequest({ params: itemIdParamSchema, body: optionalItemBodySchema }),
   handleApiResponse(itemsController.updateItem)
 );
 

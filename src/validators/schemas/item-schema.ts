@@ -1,22 +1,19 @@
 import { z } from "zod";
+import { positiveInteger, typeField } from "../zod-schema-fragments";
 
 export const itemIdParamSchema = z.object({
-  id: z.coerce.number().int().positive("ID must be a positive integer"),
+  id: positiveInteger,
 });
 
 export const itemBodySchema = z.object({
   name: z.string().min(1, "Name is required"),
-  type: z.coerce.number().int().positive("Type ID must be a positive integer"),
+  type: typeField,
 });
 
-export const itemUpdateBodySchema = z
+export const optionalItemBodySchema = z
   .object({
     name: z.string().optional(),
-    type: z.coerce
-      .number()
-      .int()
-      .positive("Type ID must be a positive integer")
-      .optional(),
+    type: typeField.optional(),
   })
   .refine(
     (data) => {

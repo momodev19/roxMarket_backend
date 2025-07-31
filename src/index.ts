@@ -28,14 +28,3 @@ app.use(globalErrorResponseMiddleware);
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
-
-setInterval(() => {
-  const used = process.memoryUsage();
-  console.log(
-    `[MEMORY] RSS: ${(used.rss / 1024 / 1024).toFixed(2)} MB, Heap: ${(
-      used.heapUsed /
-      1024 /
-      1024
-    ).toFixed(2)} MB`
-  );
-}, 10000); // every 10s

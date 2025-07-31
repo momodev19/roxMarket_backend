@@ -1,14 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import { itemTypeIds, itemTypeNames } from "../constants/itemTypes";
 const prisma = new PrismaClient();
-
-// Item Types
-const itemTypesData = [
-  "Mining",
-  "Gathering",
-  "Fishing",
-  "Crafting",
-  "Equipment Cultivation",
-];
 
 // Ragnarok X Items
 const itemsData = [
@@ -31,8 +23,17 @@ async function clearDatabase() {
 }
 
 async function seedItemTypes() {
+  const itemTypesData = Object.entries(itemTypeIds).map(([key, id]) => ({
+    id,
+    name: itemTypeNames[id as keyof typeof itemTypeNames], // match name by id
+  }));
+
   return await Promise.all(
-    itemTypesData.map((name) => prisma.itemType.create({ data: { name } }))
+    itemTypesData.map(({ id, name }) =>
+      prisma.itemType.create({
+        data: { id, name },
+      })
+    )
   );
 }
 

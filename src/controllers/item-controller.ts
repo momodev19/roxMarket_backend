@@ -18,7 +18,7 @@ export class ItemsController {
   /**
    * Get all items
    */
-  getItems = async (): Promise<Item[]> => {
+  getItems = async (): Promise<Partial<Item[]>> => {
     return await this.itemService.getAllItems();
   };
 
@@ -85,7 +85,14 @@ export class ItemsController {
   /**
    * Get all items with their latest prices
    */
-  getItemsWithPrice = async (): Promise<ItemWithPrice[]> => {
+  getItemsWithPrice = async (
+    req: Request,
+    res: Response
+  ): Promise<Partial<ItemWithPrice[]>> => {
+    if (res.locals.query.type) {
+      return await this.itemService.getItemsWithPrice(res.locals.query.type);
+    }
+
     return await this.itemService.getItemsWithPrice();
   };
 
