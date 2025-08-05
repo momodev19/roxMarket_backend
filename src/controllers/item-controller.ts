@@ -89,8 +89,8 @@ export class ItemsController {
     req: Request,
     res: Response
   ): Promise<Partial<ItemWithPrice[]>> => {
-    if (res.locals.query.type) {
-      return await this.itemService.getItemsWithPrice(res.locals.query.type);
+    if (res.locals.query.typeId) {
+      return await this.itemService.getItemsWithPrice(res.locals.query.typeId);
     }
 
     return await this.itemService.getItemsWithPrice();

@@ -9,7 +9,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "ts-node src/scripts/seed.ts",
-    "prisma:format": "prisma format"
+    "prisma:format": "prisma format",
+    "prisma:reset": "prisma migrate reset"
   },
   "prisma": {
     "seed": "ts-node src/scripts/seed.ts"

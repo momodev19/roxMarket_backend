@@ -16,6 +16,7 @@ export class ItemTypeService {
   async getAllItemTypes(select?: object): Promise<Partial<ItemType>[]> {
     return prisma.itemType.findMany({
       select: { ...this.baseSelect, ...select },
+      orderBy: { id: "asc" },
     });
   }
 

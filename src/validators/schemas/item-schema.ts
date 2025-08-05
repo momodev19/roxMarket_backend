@@ -1,14 +1,18 @@
 import { z } from "zod";
 import { positiveInteger, typeField } from "../zod-schema-fragments";
 
-export const itemIdParamSchema = z.object({
-  id: positiveInteger,
-});
+export const itemIdParamSchema = z
+  .object({
+    id: positiveInteger,
+  })
+  .strict();
 
-export const itemBodySchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  type: typeField,
-});
+export const itemBodySchema = z
+  .object({
+    name: z.string().min(1, "Name is required"),
+    type: typeField,
+  })
+  .strict();
 
 export const optionalItemBodySchema = z
   .object({
@@ -23,4 +27,5 @@ export const optionalItemBodySchema = z
     {
       message: "At least one field (name or type) must be provided for update",
     }
-  );
+  )
+  .strict();

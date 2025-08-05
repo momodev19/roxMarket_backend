@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { itemTypeIds } from "../constants/itemTypes";
+import { ITEM_TYPE_IDS } from "../constants/itemTypes";
 
 export const positiveInteger = z.coerce
   .number()
@@ -7,5 +7,5 @@ export const positiveInteger = z.coerce
   .positive("Must be a positive integer");
 
 export const typeField = z
-  .enum(Object.values(itemTypeIds).map(String) as [string, ...[]])
+  .enum(Object.values(ITEM_TYPE_IDS).map(String) as [string, ...[]])
   .transform(Number);
